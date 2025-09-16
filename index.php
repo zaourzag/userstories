@@ -2,7 +2,6 @@
 include 'includes/header.php';
 echo '<title>Vragenlijst - Home</title>';
 echo '</head>';
-
 include 'includes/navbar.php';
 include 'utils.php';
 $vragenlijst = new vragenLijst();  
