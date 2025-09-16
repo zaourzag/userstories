@@ -19,7 +19,7 @@ function __construct() {
 
 }
 public function Vragen() {
-    $sql = "SELECT * FROM vragen ORDER BY id DESC";
+    $sql = "SELECT * FROM vragen ORDER BY id ASC";
     $result = $this->db->query($sql);
     if ($result->num_rows > 0) {
         $questionCount = 0;

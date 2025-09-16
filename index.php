@@ -49,34 +49,7 @@ echo '<div id="wrapper">
       </div>
     </div>
     
-    <div class="row mt-5">
-      <div class="col-12 text-center fade-in">
-        <h3 class="mb-4">Waarom kiezen voor onze vragenlijst?</h3>
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <div class="slide-in" style="animation-delay: 0.6s;">
-              <i class="fas fa-shield-alt text-primary mb-2" style="font-size: 2rem;"></i>
-              <h5>Veilig</h5>
-              <p>Uw gegevens worden veilig opgeslagen en beschermd.</p>
-            </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <div class="slide-in" style="animation-delay: 0.8s;">
-              <i class="fas fa-mobile-alt text-primary mb-2" style="font-size: 2rem;"></i>
-              <h5>Responsief</h5>
-              <p>Werkt perfect op alle apparaten en schermformaten.</p>
-            </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <div class="slide-in" style="animation-delay: 1s;">
-              <i class="fas fa-bolt text-primary mb-2" style="font-size: 2rem;"></i>
-              <h5>Snel</h5>
-              <p>Snelle en efficiënte verwerking van uw vragen.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+   
   </main>';
 
 include 'includes/footer.php';
