@@ -4,6 +4,7 @@ echo '<title>Vragenlijst - Home</title>';
 echo '</head>';
 include 'includes/navbar.php';
 include 'utils.php';
+require 'vendor/autoload.php';
 $vragenlijst = new vragenLijst();  
 
 echo '<div id="wrapper">
