@@ -14,9 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $vraag = $_POST['vraag'];
         $naam = $_POST['naam'];
         $email = $_POST['email'];
-        
+        $code = trim($_POST['code'] ?? '');
+
         // klopt de input van de gebruiker
-        if (empty($vraag) || empty($naam) || empty($email) ) {
+        if (empty($vraag) || empty($naam) || empty($email) || empty($code)) {
             $error = 'Alle velden zijn verplicht.';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = 'Ongeldig e-mailadres.';
@@ -24,9 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Uw vraag moet minimaal 10 karakters lang zijn.';
         } elseif (strlen($naam) < 2) {
             $error = 'Naam moet minimaal 2 karakters lang zijn.';
+        } elseif (!preg_match('/^[A-Za-z0-9_-]{4,32}$/', $code)) {
+            $error = 'Controlecode moet 4-32 tekens zijn (letters, cijfers, _ of -).';
         } else {
-            ;
-            $result = $vragenlijst->nieuweVraag($vraag, $naam, $email);
+            $result = $vragenlijst->nieuweVraag($vraag, $naam, $email, $code);
 
             if ($result == 'successfully') {
                 $success = true;
@@ -51,7 +53,7 @@ echo '<div id="wrapper">
 if ($success) {
     echo '<div class="alert alert-success slide-in" role="alert">
             <i class="fas fa-check-circle me-2"></i>
-            <strong>Bedankt!</strong> Uw vraag is succesvol toegevoegd.
+            <strong>Bedankt!</strong> Uw vraag is succesvol toegevoegd. Bewaar uw controlecode om later te kunnen bewerken of verwijderen.
           </div>';
 }
 
@@ -87,6 +89,16 @@ echo '<form method="POST" action="" id="questionForm" class="slide-in" style="an
         <input type="email" class="form-control" id="email" name="email" required 
                placeholder="uw.email@voorbeeld.com">
         <div class="invalid-feedback">Gelieve een geldig e-mailadres in te voeren.</div>
+    </div>
+    <div class="mb-3">
+        <label for="code" class="form-label">
+            <i class="fas fa-key me-1"></i>Controlecode
+        </label>
+        <input type="text" class="form-control" id="code" name="code" required
+               placeholder="Kies een eigen code (4-32 tekens: a-z, A-Z, 0-9, _ of -)"
+               minlength="4" maxlength="32" pattern="[A-Za-z0-9_-]{4,32}">
+        <div class="invalid-feedback">Controlecode: 4-32 tekens (letters, cijfers, _ of -).</div>
+        <div class="form-text">Gebruik deze code om later uw vraag te bewerken of te verwijderen.</div>
     </div>
   
     <div class="text-center">
@@ -151,6 +163,8 @@ document.addEventListener("DOMContentLoaded", function() {
             setFieldInvalid(field, "Vraag moet minimaal 10 karakters lang zijn");
         } else if (field.id === "naam" && value && value.length < 2) {
             setFieldInvalid(field, "Naam moet minimaal 2 karakters lang zijn");
+        } else if (field.id === "code" && value && !/^[A-Za-z0-9_-]{4,32}$/.test(value)) {
+            setFieldInvalid(field, "Controlecode: 4-32 tekens (letters, cijfers, _ of -)");
         } else if (value) {
             setFieldValid(field);
         }
@@ -178,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     function isValidEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
     }
     
     form.addEventListener("submit", function(e) {
@@ -193,7 +207,6 @@ document.addEventListener("DOMContentLoaded", function() {
         
         if (!isValid) {
             e.preventDefault();
-            // Scroll to first invalid field
             const firstInvalid = form.querySelector(".is-invalid");
             if (firstInvalid) {
                 firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });

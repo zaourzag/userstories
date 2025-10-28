@@ -10,13 +10,31 @@ echo '<div id="wrapper">
 <div class="container mt-5 fade-in">
     <div class="row">
         <div class="col-12">
-            <h1 class="text-center mb-5">
+            <h1 class="text-center mb-3">
                 <i class="fas fa-database text-primary me-2"></i>
                 Alle Gestelde Vragen
             </h1>
+            <div class="text-center mb-4">
+                <a href="backup.php" class="btn btn-outline-secondary">
+                    <i class="fas fa-shield-blank me-1"></i> Backup & Restore
+                </a>
+            </div>
         </div>
-    </div>
-    
+    </div>';
+
+    // Success/feedback alerts
+    if (isset($_GET['updated'])) {
+        echo '<div class="alert alert-success slide-in"><i class="fas fa-check-circle me-1"></i>Vraag bijgewerkt.</div>';
+    }
+    if (isset($_GET['deleted'])) {
+        if ($_GET['deleted'] === '1') {
+            echo '<div class="alert alert-success slide-in"><i class="fas fa-check-circle me-1"></i>Vraag verwijderd.</div>';
+        } else {
+            echo '<div class="alert alert-warning slide-in">Verwijderen mislukt.</div>';
+        }
+    }
+
+echo '    
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="input-group">
@@ -63,14 +81,31 @@ if (!document.querySelector("link[href*=\"font-awesome\"]")) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    // Auto-dismiss alerts with animation
+    document.querySelectorAll(".alert.slide-in, .alert.fade-in").forEach(alert => {
+        setTimeout(() => {
+            alert.classList.add("fade-out");
+            alert.addEventListener("animationend", () => alert.remove(), { once: true });
+        }, 2500);
+    });
+
+    // Subtle highlight of list after actions
+    const params = new URLSearchParams(location.search);
+    const container = document.getElementById("Vragen");
+    if (container) {
+        if (params.has("updated")) container.classList.add("highlight-success");
+        if (params.get("deleted") === "1") container.classList.add("highlight-danger");
+        setTimeout(() => {
+            container.classList.remove("highlight-success","highlight-danger");
+        }, 1400);
+    }
+
     // Search functionality
     const searchInput = document.getElementById("searchInput");
     const questionItems = document.querySelectorAll(".question-item");
-    
     if (searchInput && questionItems.length > 0) {
         searchInput.addEventListener("input", function() {
             const searchTerm = this.value.toLowerCase();
-            
             questionItems.forEach(item => {
                 const text = item.textContent.toLowerCase();
                 if (text.includes(searchTerm)) {
@@ -82,32 +117,19 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     }
-    
-    // Add active navigation highlighting
+
+    // Active nav link
     const currentPage = window.location.pathname.split("/").pop();
     document.querySelectorAll(".navbar-nav .nav-link").forEach(link => {
-        if (link.getAttribute("href") === currentPage) {
-            link.classList.add("active");
-        }
+        if (link.getAttribute("href") === currentPage) link.classList.add("active");
     });
-    
+
     // Animate cards on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
-    };
-    
+    const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("fade-in");
-            }
-        });
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add("fade-in"); });
     }, observerOptions);
-    
-    document.querySelectorAll(".card").forEach(card => {
-        observer.observe(card);
-    });
+    document.querySelectorAll(".card").forEach(card => observer.observe(card));
 });
 </script>';
 ?>

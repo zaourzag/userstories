@@ -3,7 +3,9 @@
     "require": {
         "vlucas/phpdotenv": "^5.6",
         "sentry/sentry": "^4.17",
-        "phpmailer/phpmailer": "^7.0"
+        "phpmailer/phpmailer": "^7.0",
+        "monolog/monolog": "^3.9",
+        "dompdf/dompdf": "^3.1"
     },
     "autoload": {
         "psr-4": {
